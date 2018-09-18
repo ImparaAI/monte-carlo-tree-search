@@ -30,10 +30,10 @@ class MonteCarlo:
 			self.expand(current_node)
 
 	def expand(self, node):
-		self.child_finder(node)
+		self.child_finder(node, self)
 
 		for child in node.children:
-			child_win_value = self.node_evaluator(child)
+			child_win_value = self.node_evaluator(child, self)
 
 			if child_win_value != None:
 				child.update_win_value(child_win_value)
@@ -45,11 +45,11 @@ class MonteCarlo:
 		node.expanded = True
 
 	def random_rollout(self, node):
-		self.child_finder(node)
+		self.child_finder(node, self)
 		child = choice(node.children)
 		node.children = []
 		node.add_child(child)
-		child_win_value = self.node_evaluator(child)
+		child_win_value = self.node_evaluator(child, self)
 
 		if child_win_value != None:
 			node.update_win_value(child_win_value)
