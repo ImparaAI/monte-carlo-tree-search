@@ -17,7 +17,7 @@ class TestPolicyValue(unittest.TestCase):
 		node.add_children(self.build_children(node))
 		node.update_win_value(node.state)
 
-	def build_children(self, node, montecarlo):
+	def build_children(self, node):
 		children = []
 
 		for i in range(2):
