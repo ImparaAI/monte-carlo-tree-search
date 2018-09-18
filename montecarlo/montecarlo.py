@@ -5,7 +5,7 @@ class MonteCarlo:
 	def __init__(self, root_node):
 		self.root_node = root_node
 		self.child_finder = None
-		self.node_evaluator = lambda child: None
+		self.node_evaluator = lambda child, montecarlo: None
 
 	def make_choice(self):
 		best_children = []
