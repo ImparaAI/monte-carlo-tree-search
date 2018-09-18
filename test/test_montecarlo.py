@@ -14,7 +14,7 @@ class TestMonteCarlo(unittest.TestCase):
 		chosen_node = montecarlo.make_choice()
 		self.assertIs(chosen_node.state, 1)
 
-	def child_finder(self, node):
+	def child_finder(self, node, montecarlo):
 		if node.state == 0:
 			node.add_children([Node(1), Node(-1)])
 		else:
@@ -22,7 +22,7 @@ class TestMonteCarlo(unittest.TestCase):
 				modifier = (100 if i == 1 else 200) * (-1 if node.state < 0 else 1)
 				node.add_child(Node(node.state + modifier))
 
-	def node_evaluator(self, node):
+	def node_evaluator(self, node, montecarlo):
 		if node.state > 1000:
 			return 1
 		elif node.state < -1000:
