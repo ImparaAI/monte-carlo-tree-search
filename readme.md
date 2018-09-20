@@ -66,7 +66,7 @@ def child_finder(self, node):
 		child.policy_value = get_child_policy_value(child, expert_policy_values) #should return a value between 0 and 1
 		node.add_child(child)
 
-	node.update_win_value(node.state) #
+	node.update_win_value(win_value)
 
 montecarlo.child_finder = child_finder
 ```
