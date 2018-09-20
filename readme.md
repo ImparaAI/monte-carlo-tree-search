@@ -9,13 +9,11 @@ A Python3 library that you can use to run a Monte Carlo tree search, either trad
 If you're unfamiliar with the Monte Carlo tree search algorithm, you should first become familiar with it. Simply put, it helps make a decision from a set of possibile options by doing one of two things:
 
 - Constructing likely outcomes either by drilling down into random endstates for each option or..
-- Using expert policies to make the similar determinations without having to drill down to end states
+- Using expert policies to make similar determinations without having to drill down to end states
 
-As the user of this library, you only have to provide a mechanism of finding children, and optionally a way of evaluating nodes for end state outcomes.
+As the user of this library, you only have to provide a function that finds the direct children of each node, and optionally a function for evaluating nodes for end state outcomes.
 
 # Usage
-
-## Create instance
 
 Create a new Monte Carlo tree:
 
