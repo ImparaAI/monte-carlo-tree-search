@@ -1,6 +1,6 @@
 A Python3 library that you can use to run a Monte Carlo tree search, either traditionally with drilling down to end game states or with expert policies as you might provide from a neural network.
 
-- **Version:** 1.1.1
+- **Version:** 1.1.2
 
 [![Build Status](https://travis-ci.org/ImparaAI/monte-carlo-tree-search.png?branch=master)](https://travis-ci.org/ImparaAI/monte-carlo-tree-search)
 
