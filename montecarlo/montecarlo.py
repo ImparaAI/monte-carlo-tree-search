@@ -21,9 +21,9 @@ class MonteCarlo:
 		return choice(best_children)
 
 	def simulate(self, expansion_count = 1):
-		for i in range(expansion_count):
-			current_node = self.root_node
+		current_node = self.root_node
 
+		for i in range(expansion_count):
 			while current_node.expanded:
 				current_node = current_node.get_preferred_child()
 

@@ -1,6 +1,6 @@
 A Python3 library that you can use to run a Monte Carlo tree search, either traditionally with drilling down to end game states or with expert policies as you might provide from a neural network.
 
-- **Version:** 1.1.0
+- **Version:** 1.1.1
 
 [![Build Status](https://travis-ci.org/ImparaAI/monte-carlo-tree-search.png?branch=master)](https://travis-ci.org/ImparaAI/monte-carlo-tree-search)
 
@@ -9,13 +9,11 @@ A Python3 library that you can use to run a Monte Carlo tree search, either trad
 If you're unfamiliar with the Monte Carlo tree search algorithm, you should first become familiar with it. Simply put, it helps make a decision from a set of possibile options by doing one of two things:
 
 - Constructing likely outcomes either by drilling down into random endstates for each option or..
-- Using expert policies to make the similar determinations without having to drill down to end states
+- Using expert policies to make similar determinations without having to drill down to end states
 
-As the user of this library, you only have to provide a mechanism of finding children, and optionally a way of evaluating nodes for end state outcomes.
+As the user of this library, you only have to provide a function that finds the direct children of each node, and optionally a function for evaluating nodes for end state outcomes.
 
 # Usage
-
-## Create instance
 
 Create a new Monte Carlo tree:
 
@@ -68,7 +66,7 @@ def child_finder(self, node):
 		child.policy_value = get_child_policy_value(child, expert_policy_values) #should return a value between 0 and 1
 		node.add_child(child)
 
-	node.update_win_value(node.state) #
+	node.update_win_value(win_value)
 
 montecarlo.child_finder = child_finder
 ```

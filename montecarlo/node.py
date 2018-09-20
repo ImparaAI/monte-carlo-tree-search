@@ -1,4 +1,4 @@
-from random import choice
+import random
 from math import log, sqrt
 
 class Node:
@@ -43,7 +43,7 @@ class Node:
 			elif score == best_score:
 				best_children.append(child)
 
-		return choice(best_children)
+		return random.choice(best_children)
 
 	def get_score(self):
 		discovery_constant = 0.35

@@ -25,4 +25,6 @@ class TestPolicyValue(unittest.TestCase):
 			child.policy_value = .90 if i == 1 else 0.10
 			children.append(child)
 
+		node.update_win_value(0)
+
 		return children
