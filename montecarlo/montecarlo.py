@@ -42,7 +42,8 @@ class MonteCarlo:
 				self.random_rollout(child)
 				child.children = []
 
-		node.expanded = True
+		if len(node.children):
+			node.expanded = True
 
 	def random_rollout(self, node):
 		self.child_finder(node, self)
