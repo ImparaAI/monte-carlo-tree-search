@@ -1,6 +1,6 @@
 A Python3 library that you can use to run a Monte Carlo tree search, either traditionally with drilling down to end game states or with expert policies as you might provide from a neural network.
 
-- **Version:** 1.1.2
+- **Version:** 1.2.0
 
 [![Build Status](https://travis-ci.org/ImparaAI/monte-carlo-tree-search.png?branch=master)](https://travis-ci.org/ImparaAI/monte-carlo-tree-search)
 
@@ -90,4 +90,13 @@ After you've chosen a new root node, you can override it on the `montecarlo` ins
 
 ```python
 montecarlo.root_node = montecarlo.make_choice()
+```
+
+## Turn based environments
+
+If you are modeling a turn based environment (E.g. a two player board game), set the player_number on each node in order for the selection process to invert child win values.
+
+```python
+node = Node(state)
+node.player_number = 1
 ```

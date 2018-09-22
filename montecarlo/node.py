@@ -11,6 +11,7 @@ class Node:
 		self.parent = None
 		self.children = []
 		self.expanded = False
+		self.player_number = None
 
 	def update_win_value(self, value):
 		self.win_value += value
@@ -30,12 +31,12 @@ class Node:
 		for child in children:
 			self.add_child(child)
 
-	def get_preferred_child(self):
+	def get_preferred_child(self, root_node):
 		best_children = []
 		best_score = float('-inf')
 
 		for child in self.children:
-			score = child.get_score()
+			score = child.get_score(root_node)
 
 			if score > best_score:
 				best_score = score
@@ -45,10 +46,12 @@ class Node:
 
 		return random.choice(best_children)
 
-	def get_score(self):
+	def get_score(self, root_node):
 		discovery_constant = 0.35
 		discovery_operand = discovery_constant * (self.policy_value or 1) * sqrt(log(self.parent.visits) / (self.visits or 1))
-		win_operand = self.win_value / (self.visits or 1)
+
+		win_multiplier = 1 if self.parent.player_number == root_node.player_number else -1
+		win_operand = win_multiplier * self.win_value / (self.visits or 1)
 
 		self.score = win_operand + discovery_operand
 
