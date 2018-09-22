@@ -25,7 +25,7 @@ class MonteCarlo:
 			current_node = self.root_node
 
 			while current_node.expanded:
-				current_node = current_node.get_preferred_child()
+				current_node = current_node.get_preferred_child(self.root_node)
 
 			self.expand(current_node)
 
