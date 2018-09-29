@@ -14,6 +14,9 @@ class TestMonteCarlo(unittest.TestCase):
 		chosen_node = montecarlo.make_choice()
 		self.assertIs(chosen_node.state, 1)
 
+		exploratory_node = montecarlo.make_exploratory_choice()
+		self.assertTrue(chosen_node != None)
+
 	def child_finder(self, node, montecarlo):
 		if node.state == 0:
 			node.add_children([Node(1), Node(-1)])

@@ -1,37 +1,50 @@
-A Python3 library that you can use to run a Monte Carlo tree search, either traditionally with drilling down to end game states or with expert policies as you might provide from a neural network.
+A Python3 library for running a [Monte Carlo tree search](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search), either traditionally by drilling down to end game states or with expert policies as might be provided by a neural network.
 
-- **Version:** 1.2.1
+- **Version:** 1.3.0
 
 [![Build Status](https://travis-ci.org/ImparaAI/monte-carlo-tree-search.png?branch=master)](https://travis-ci.org/ImparaAI/monte-carlo-tree-search)
 
-# Basics
+# Monte Carlo tree search Basics
 
-If you're unfamiliar with the Monte Carlo tree search algorithm, you should first become familiar with it. Simply put, it helps make a decision from a set of possibile options by doing one of two things:
+The Monte Carlo tree search (MCTS) algorithm is used to make an educated guess about what should be done next. This is commonly applied to games like chess or go where it's useful to know what move should come next if you want to win the game.
 
-- Constructing likely outcomes either by drilling down into random endstates for each option or..
-- Using expert policies to make similar determinations without having to drill down to end states
+MCTS works by expanding the search tree to figure out which moves are likely to produce a positive result. While time is available, the algorithm continues to explore the tree, always slightly favoring the direction that has either proved to be fruitful or is completely unexplored. When no time is left, the most explored direction is chosen.
 
-As the user of this library, you only have to provide a function that finds the direct children of each node, and optionally a function for evaluating nodes for end state outcomes.
+The search tree expansion can be done in two different ways:   done through .
+
+- **Traditional**: At least one random rollout to a game's end state (e.g. win, loss, tie) for each move under evaluation so the algorithm can make a choice.
+- **Expert policy (i.e. neural network)**: Instead of expensively rolling all the way out to a game's end state ask an expert (a neural network for example) which move is most likely to produce a positive outcome.
+
+For a deeper dive into the topic, check out [this article](http://tim.hibal.org/blog/alpha-zero-how-and-why-it-works/).
+
+# This library
+
+As the user of this library, you only have to provide:
+
+- A function that finds the direct children of each search tree node (called the **`child_finder`**)
+- A function for evaluating nodes for end state outcomes (called the **`node_evaluator`**)
+-- *(Not necessary with neural network)*
 
 # Usage
 
 Create a new Monte Carlo tree:
 
 ```python
-from game import Game
+from chess import Game
 from montecarlo.node import Node
 from montecarlo.montecarlo import MonteCarlo
 
-montecarlo = MonteCarlo(Node(Game()))
+chess_game = Game()
+montecarlo = MonteCarlo(Node(chess_game))
 ```
 
-When instantiating the `MonteCarlo` class, you must pass in the root node of the tree with its state defined. The state of the node can be anything you will need to determine what the children of that node will be.
+The root node describes your current game state. This state will be used by you later in the **`child_finder`** and the **`node_evaluator`**.
 
-For the sake of demonstration, we will assume you have an generic `Game` library that can tell you what moves are possible and make those moves.
+For the sake of demonstration, we will assume you have an generic `Game` library that can tell you what moves are possible and allows you to make those moves.
 
 ## Traditional Monte Carlo
 
-Add a child finder and a node evaluator:
+Add a **`child_finder`** and a **`node_evaluator`**:
 
 ```python
 def child_finder(node):
@@ -50,7 +63,7 @@ montecarlo.child_finder = child_finder
 montecarlo.node_evaluator = node_evaluator
 ```
 
-The `child_finder` simply needs to add new child nodes to the parent node passed into the function. If there are no children, the library won't try to drill down further. In that scenario, however, the parent should be in an end state, so the `node_evaluator` should return a value between `-1` and `1`.
+The **`child_finder`** should add any child nodes to the parent node passed into the function, if there are any. If there are none, the parent should be in an end state, so the **`node_evaluator`** should return a value between `-1` and `1`.
 
 ## Expert policy (AI)
 
@@ -63,6 +76,7 @@ def child_finder(self, node):
 	for move in node.state.get_possible_moves():
 		child = Node(deepcopy(node.state))
 		child.state.move(move)
+		child.player_number = child.state.whose_turn()
 		child.policy_value = get_child_policy_value(child, expert_policy_values) #should return a value between 0 and 1
 		node.add_child(child)
 
@@ -79,7 +93,7 @@ Run the simulations:
 montecarlo.simulate(50) #number of expansions to run. higher is typically more accurate at the cost of processing time
 ```
 
-Once the simulations have been run you can ask the instance to make a choice:
+Once the simulations have run you can ask the instance to make a choice:
 
 ```python
 chosen_child_node = montecarlo.make_choice()
@@ -92,11 +106,28 @@ After you've chosen a new root node, you can override it on the `montecarlo` ins
 montecarlo.root_node = montecarlo.make_choice()
 ```
 
+If you're training a neural network, you may want to make a more exploratory choice for the first N moves of a game:
+
+```python
+montecarlo.root_node = montecarlo.make_exploratory_choice()
+```
+
+This won't provide a purely random choice, rather it will be random with a bias favoring the more explored pathways.
+
 ## Turn based environments
 
-If you are modeling a turn based environment (E.g. a two player board game), set the player_number on each node in order for the selection process to invert child win values.
+If you are modeling a turn based environment (e.g. a two player board game), set the `player_number` on each node so the selection process can invert child win values:
 
 ```python
 node = Node(state)
 node.player_number = 1
+```
+
+## Tweaking the discovery factor
+
+When building a new child node, you can change the rate at which the library prefers to expand undiscovered states over states that have demonstrated value in previous expansions:
+
+```python
+node = Node(state)
+node.discovery_factor = 0.2 #0.35 by default
 ```
