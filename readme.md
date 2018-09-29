@@ -106,9 +106,17 @@ After you've chosen a new root node, you can override it on the `montecarlo` ins
 montecarlo.root_node = montecarlo.make_choice()
 ```
 
+If you're training a neural network, you may want to make a more exploratory choice for the first N moves of a game:
+
+```python
+montecarlo.root_node = montecarlo.make_exploratory_choice()
+```
+
+This won't provide a purely random choice, rather it will be random with a bias favoring the more explored pathways.
+
 ## Turn based environments
 
-If you are modeling a turn based environment (e.g. a two player board game), set the `player_number` on each node so the selection process can invert child win values.
+If you are modeling a turn based environment (e.g. a two player board game), set the `player_number` on each node so the selection process can invert child win values:
 
 ```python
 node = Node(state)
@@ -117,7 +125,7 @@ node.player_number = 1
 
 ## Tweaking the discovery factor
 
-When building a new child node, you can change the rate at which the library prefers to expand undiscovered states over states that have demonstrated value in previous expansions.
+When building a new child node, you can change the rate at which the library prefers to expand undiscovered states over states that have demonstrated value in previous expansions:
 
 ```python
 node = Node(state)

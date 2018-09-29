@@ -1,4 +1,4 @@
-from random import choice
+import random
 
 class MonteCarlo:
 
@@ -18,7 +18,20 @@ class MonteCarlo:
 			elif child.visits == most_visits:
 				best_children.append(child)
 
-		return choice(best_children)
+		return random.choice(best_children)
+
+	def make_exploratory_choice(self):
+		children_visits = map(lambda child: child.visits, self.root_node.children)
+		total_visits = sum(children_visits)
+		children_visit_probabilities = [visit / total_visits for visit in children_visits]
+		random_probability = random.uniform(0, 1)
+		probabilities_already_counted = 0.
+
+		for i, probability in enumerate(children_visit_probabilities):
+			if probabilities_already_counted + probability >= random_probability:
+				return self.root_node.children[i]
+
+			probabilities_already_counted += probability
 
 	def simulate(self, expansion_count = 1):
 		for i in range(expansion_count):

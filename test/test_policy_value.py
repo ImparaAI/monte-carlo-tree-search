@@ -13,6 +13,9 @@ class TestPolicyValue(unittest.TestCase):
 		chosen_node = montecarlo.make_choice()
 		self.assertIs(chosen_node.state, 1)
 
+		exploratory_node = montecarlo.make_exploratory_choice()
+		self.assertTrue(chosen_node != None)
+
 	def child_finder(self, node, montecarlo):
 		node.add_children(self.build_children(node))
 		node.update_win_value(node.state)
