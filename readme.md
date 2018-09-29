@@ -63,7 +63,7 @@ montecarlo.child_finder = child_finder
 montecarlo.node_evaluator = node_evaluator
 ```
 
-The **`child_finder`** should add any child nodes to the parent node passed into the function, if there are any. If there are none, the parent should be in an end state, so the `node_evaluator` should return a value between `-1` and `1`.
+The **`child_finder`** should add any child nodes to the parent node passed into the function, if there are any. If there are none, the parent should be in an end state, so the **`node_evaluator`** should return a value between `-1` and `1`.
 
 ## Expert policy (AI)
 
