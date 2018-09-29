@@ -114,3 +114,12 @@ If you are modeling a turn based environment (e.g. a two player board game), set
 node = Node(state)
 node.player_number = 1
 ```
+
+## Tweaking the discovery factor
+
+When building a new child node, you can change the rate at which the library prefers to expand undiscovered states over states that have demonstrated value in previous expansions.
+
+```python
+node = Node(state)
+node.discovery_factor = 0.2 #0.35 by default
+```
