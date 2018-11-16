@@ -6,7 +6,7 @@ A Python3 library for running a [Monte Carlo tree search](https://en.wikipedia.o
 
 # Monte Carlo tree search basics
 
-The Monte Carlo tree search (MCTS) algorithm can help with making a decision from a number of options. This is commonly applied to games like chess or go where it's useful to know what move should come next if you want to win the game.
+The Monte Carlo tree search (MCTS) algorithm can help with making a decision from a number of options. It avoids exploring every possible option by randomly sampling a small number of pathways and picking the move with the highest probability of victory. This is commonly applied to games like chess or go where it's useful to know what move should come next if you want to win the game.
 
 MCTS works by expanding the search tree to figure out which moves (or child/subsequent states) are likely to produce a positive result if chosen. While time is available, the algorithm continues to explore the tree, always slightly favoring the direction that has either proven to be fruitful or is less explored. When no time is left, the most explored direction is chosen.
 
