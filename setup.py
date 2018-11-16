@@ -5,7 +5,7 @@ with open("readme.md", "r") as fh:
 
 setuptools.setup(
     name="imparaai-montecarlo",
-    version="1.3.0",
+    version="1.3.1",
     license='MIT',
     author="ImparaAI",
     author_email="author@example.com",
