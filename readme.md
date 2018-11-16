@@ -4,13 +4,13 @@ A Python3 library for running a [Monte Carlo tree search](https://en.wikipedia.o
 
 [![Build Status](https://travis-ci.org/ImparaAI/monte-carlo-tree-search.png?branch=master)](https://travis-ci.org/ImparaAI/monte-carlo-tree-search)
 
-# Monte Carlo tree search Basics
+# Monte Carlo tree search basics
 
-The Monte Carlo tree search (MCTS) algorithm is used to make an educated guess about what should be done next. This is commonly applied to games like chess or go where it's useful to know what move should come next if you want to win the game.
+The Monte Carlo tree search (MCTS) algorithm can help with making a decision from a number of options. This is commonly applied to games like chess or go where it's useful to know what move should come next if you want to win the game.
 
-MCTS works by expanding the search tree to figure out which moves are likely to produce a positive result. While time is available, the algorithm continues to explore the tree, always slightly favoring the direction that has either proved to be fruitful or is completely unexplored. When no time is left, the most explored direction is chosen.
+MCTS works by expanding the search tree to figure out which moves (or child/subsequent states) are likely to produce a positive result if chosen. While time is available, the algorithm continues to explore the tree, always slightly favoring the direction that has either proven to be fruitful or is less explored. When no time is left, the most explored direction is chosen.
 
-The search tree expansion can be done in two different ways:   done through .
+The search tree expansion can be done in two different ways:
 
 - **Traditional**: At least one random rollout to a game's end state (e.g. win, loss, tie) for each move under evaluation so the algorithm can make a choice.
 - **Expert policy (i.e. neural network)**: Instead of expensively rolling all the way out to a game's end state ask an expert (a neural network for example) which move is most likely to produce a positive outcome.
@@ -40,7 +40,7 @@ montecarlo = MonteCarlo(Node(chess_game))
 
 The root node describes your current game state. This state will be used by you later in the **`child_finder`** and the **`node_evaluator`**.
 
-For the sake of demonstration, we will assume you have an generic `Game` library that can tell you what moves are possible and allows you to make those moves.
+For the sake of demonstration, we will assume you have a generic `Game` library that can tell you what moves are possible and allows you to perform those moves to change the game's state.
 
 ## Traditional Monte Carlo
 
@@ -77,7 +77,7 @@ def child_finder(self, node):
 		child = Node(deepcopy(node.state))
 		child.state.move(move)
 		child.player_number = child.state.whose_turn()
-		child.policy_value = get_child_policy_value(child, expert_policy_values) #should return a value between 0 and 1
+		child.policy_value = get_child_policy_value(child, expert_policy_values) #should return a probability value between 0 and 1
 		node.add_child(child)
 
 	node.update_win_value(win_value)
@@ -114,20 +114,24 @@ montecarlo.root_node = montecarlo.make_exploratory_choice()
 
 This won't provide a purely random choice, rather it will be random with a bias favoring the more explored pathways.
 
-## Turn based environments
+## Turn-based environments
 
-If you are modeling a turn based environment (e.g. a two player board game), set the `player_number` on each node so the selection process can invert child win values:
+If you are modeling a turn-based environment (e.g. a two player board game), set the `player_number` on each node so the selection process can invert child win values:
 
 ```python
 node = Node(state)
 node.player_number = 1
 ```
 
+It doesn't matter what this number is (you can use 1 and 2 or 5 and 6), only that it is consistent with other nodes.
+
 ## Tweaking the discovery factor
 
-When building a new child node, you can change the rate at which the library prefers to expand undiscovered states over states that have demonstrated value in previous expansions:
+When building a new child node, you can change the rate at which discovery is preferred:
 
 ```python
 node = Node(state)
-node.discovery_factor = 0.2 #0.35 by default
+node.discovery_factor = 0.2 #0.35 by default, can be between 0 and 1
 ```
+
+The closer this number is to 1, the more discovery will be favored over demonstrated value in later simulations.
