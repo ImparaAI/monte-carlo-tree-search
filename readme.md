@@ -47,13 +47,13 @@ For the sake of demonstration, we will assume you have a generic `Game` library 
 Add a **`child_finder`** and a **`node_evaluator`**:
 
 ```python
-def child_finder(node):
+def child_finder(node, montecarlo):
 	for move in node.state.get_possible_moves():
 		child = Node(deepcopy(node.state)) #or however you want to construct the child's state
 		child.state.move(move) #or however your library works
 		node.add_child(child)
 
-def node_evaluator(self, node):
+def node_evaluator(node, montecarlo):
 	if node.state.won():
 		return 1
 	elif node.state.lost():
@@ -70,7 +70,7 @@ The **`child_finder`** should add any child nodes to the parent node passed into
 If you have an expert policy that you can apply to the children as they're being generated, the library will recognize that it doesn't need to make the costly drill down to an end state. If your neural net produces both an expert policy value for the children and a win value for the parent node, you can skip declaring the `node_evaluator` altogether.
 
 ```python
-def child_finder(self, node):
+def child_finder(node, montecarlo):
 	win_value, expert_policy_values = neural_network.predict(node.state)
 
 	for move in node.state.get_possible_moves():
