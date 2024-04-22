@@ -23,7 +23,7 @@ class MonteCarlo:
 	def make_exploratory_choice(self):
 		children_visits = map(lambda child: child.visits, self.root_node.children)
 		children_visit_probabilities = [visit / self.root_node.visits for visit in children_visits]
-		random_probability = random.uniform(0, 1)
+		random_probability = random.uniform(0, sum(children_visit_probabilities))
 		probabilities_already_counted = 0.
 
 		for i, probability in enumerate(children_visit_probabilities):
